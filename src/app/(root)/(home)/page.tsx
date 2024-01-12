@@ -7,6 +7,7 @@ import { HomePageFilters } from "@/constants/filters";
 import HomeFilters from "@/components/home/HomeFilters";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
+// import { getQuestions } from "@/lib/actions/question.action";
 
 const questions = [
   {
@@ -50,7 +51,8 @@ const questions = [
   },
 ];
 
-const HomePage = () => {
+export default async function HomePage() {
+  // const result = await getQuestions();
   return (
     <>
       <div
@@ -117,6 +119,4 @@ const HomePage = () => {
       </div>
     </>
   );
-};
-
-export default HomePage;
+}
