@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
-  // Create a new Svix instance with your secret.
+  // Create a new SVIX instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
   let evt: WebhookEvent;
@@ -50,35 +50,32 @@ export async function POST(req: Request) {
     });
   }
 
-  // Get the ID and type
-  const { id } = evt.data;
   const eventType = evt.type;
-
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-  console.log("Webhook body:", body);
 
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
 
-    // create a new use in your database
+    // Create a new user in your database
     const mongoUser = await createUser({
       clerkId: id,
-      name: `${first_name} ${last_name ? `${last_name}` : ``}`,
+      name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
       username: username!,
       email: email_addresses[0].email_address,
       picture: image_url,
     });
 
     return NextResponse.json({ message: "OK", user: mongoUser });
-  } else if (eventType === "user.updated") {
+  }
+
+  if (eventType === "user.updated") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
 
     const mongoUser = await updateUser({
       clerkId: id,
       updateData: {
-        name: `${first_name} ${last_name ? `${last_name}` : ``}`,
+        name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
         username: username!,
         email: email_addresses[0].email_address,
         picture: image_url,
@@ -92,10 +89,12 @@ export async function POST(req: Request) {
   if (eventType === "user.deleted") {
     const { id } = evt.data;
 
-    const deleteduser = await deleteUser({ clerkId: id! });
+    const deletedUser = await deleteUser({
+      clerkId: id!,
+    });
 
-    return NextResponse.json({ message: "OK", user: deleteduser });
+    return NextResponse.json({ message: "OK", user: deletedUser });
   }
 
-  return new Response("", { status: 201 });
+  return NextResponse.json({ message: "OK" });
 }
