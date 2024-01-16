@@ -8,6 +8,7 @@ import Interaction from "@/database/interaction.model";
 import {
   CreateQuestionParams,
   EditQuestionParams,
+  GetQuestionByIdParams,
   GetQuestionsParams,
 } from "./shared.types";
 import { FilterQuery } from "mongoose";
@@ -131,5 +132,30 @@ export async function editQuestion(params: EditQuestionParams) {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getQuestionById(params: GetQuestionByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId } = params;
+
+    const question = await Question.findById(questionId)
+      .populate({
+        path: "tags",
+        model: Tag,
+        select: "_id name",
+      })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name picture",
+      });
+
+    return question;
+  } catch (e) {
+    console.log(e);
+    throw e;
   }
 }
