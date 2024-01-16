@@ -4,6 +4,7 @@ import Filter from "@/components/shared/Filter";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import Link from "next/link";
+import UserCard from "@/components/cards/UserCard";
 
 const Community = async () => {
   const result = await getAllUsers({});
@@ -30,7 +31,7 @@ const Community = async () => {
 
       <section className="mt-12 flex flex-wrap gap-4">
         {result.users.length > 0 ? (
-          result.users.map((user) => <div key={user.name}>{user.name}</div>)
+          result.users.map((user) => <UserCard key={user.name} user={user} />)
         ) : (
           <div
             className="paragraph-regular text-dark200_light800
