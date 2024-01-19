@@ -67,7 +67,7 @@ const page = async ({ params }: Props) => {
         />
       </div>
 
-      <ParseHTML />
+      <ParseHTML data={result.content} />
     </>
   );
 };
