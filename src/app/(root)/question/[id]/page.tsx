@@ -7,6 +7,9 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
 import Answer from "@/components/forms/Answer";
+import { auth } from "@clerk/nextjs";
+import { getUserById } from "@/lib/actions/user.action";
+import AllAnswers from "@/components/shared/AllAnswers";
 
 interface Props {
   params: {
@@ -15,7 +18,16 @@ interface Props {
 }
 
 const page = async ({ params }: Props) => {
+  const { userId: clerkId } = auth();
+
+  let mongoUser;
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
+
   const result = await getQuestionById({ questionId: params.id });
+
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -82,7 +94,17 @@ const page = async ({ params }: Props) => {
         ))}
       </div>
 
-      <Answer />
+      <AllAnswers
+        questionId={result.id}
+        userId={JSON.stringify(mongoUser._id)}
+        totalAnswers={result.answers.length}
+      />
+
+      <Answer
+        question={result.content}
+        questionId={JSON.stringify(result.id)}
+        authorId={JSON.stringify(mongoUser._id)}
+      />
     </>
   );
 };
