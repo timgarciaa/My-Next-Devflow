@@ -23,10 +23,6 @@ This Project is a clone of how Stack Overflow works. It has most of stack overfl
 - Zod
 - Vercel
 
-## Usage
-
-Write about how to use this project.
-
 ## Running Locally
 
 1. Install NodeJS. I recommend using version 20 or higher. Check your Node.js
